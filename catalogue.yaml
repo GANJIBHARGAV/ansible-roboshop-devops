@@ -1,5 +1,6 @@
 - name: Catalogue service playbook
   hosts: catalogue
+  become: yes
   tasks:
   - name: Disabling the nodejs
     ansible.builtin.command: dnf module disable nodejs -y
