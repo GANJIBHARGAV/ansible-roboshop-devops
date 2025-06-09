@@ -1,10 +1,11 @@
 - name: configure user yaml services
   hosts: user
+  become: yes
   tasks:
   - name: disbaling the nodejs
     ansible.builtin.command: dnf module disable nodejs -y
   - name: enable the nodejs
-    nsible.builtin.command: dnf module enable nodejs:20 -y
+    ansible.builtin.command: dnf module enable nodejs:20 -y
 
   - name: installing the nodejs
     ansible.builtin.dnf:
