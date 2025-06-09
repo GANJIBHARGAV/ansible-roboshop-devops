@@ -29,12 +29,55 @@
     ansible.builtin.get_url:
       url: https://roboshop-artifacts.s3.amazonaws.com/catalogue-v3.zip 
       dest: /tmp/catalogue.zip
-
+# remote_src: yes means this catalogue service already exists in catalogue server
   - name: unzipping the code
     ansible.builtin.unarchive:
       src: /tmp/catalogue.zip
       dest: /app
       remote_src: yes
+
+  - name: Install dependencies
+    community.general.npm:
+      path: /app    
+
+  - name: Copy the catalogue service to etc folder
+    ansible.builtin.copy:
+      src: catalogue.service
+      dest: /etc/systemd/system/catalogue.service
+
+  - name: daemon reload the service
+    ansible.buitlin.systemd_service:
+      daemon_reload: true
+
+  - name: Enabled and start the service
+    ansible.builtin.service:
+      name: catalogue
+      state: started
+      enabled: yes
+
+  - name: copy of mongodb
+    ansible.builtin.copy:
+      src: mongodb.repo
+      dest: /etc/yum.repos.d/mongodb.repo
+
+  - name: Installing of mongodb client
+    ansible.builtin.dnf:
+      name: mongodb-mongosh
+      state: present
+
+  - name: check products loaded or not
+    ansible.builtin.command: mongosh --host mongodb.bhargavcommerce.shop --eval 'db.getMongo().getDBNames().indexOf("catalogue")'
+    register: catalogue_output
+
+  - name: output of catalogue prducts
+    ansible.builtin.debug:
+     msg: "{{ catalogue_output }}"
+
+  - name: load the products
+    ansible.builtin.shell: mongosh --host mongodb.bhargav.commerce </app/db/master-data.js
+    when: catalogue_output.stdout | int < 0
+
+          
       
 
 
