@@ -10,7 +10,7 @@
 
   - name: Installing the nodejs
     ansible.builtin.dnf:
-      name: noejs
+      name: nodejs
       state: present
 
   - name: creating system user
