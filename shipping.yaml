@@ -13,8 +13,7 @@
   - name: insatll PyMySQL and cryptography
     ansible.builtin.pip:
       name: "{{ item }}"
-      state: present
-      executables: pip3.9
+      executable: pip3.9
     loop:
     - cryptography
     - PyMySQL      
