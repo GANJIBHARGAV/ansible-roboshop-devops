@@ -1,5 +1,6 @@
 - name: Configuring shipping service playbook
   hosts: shipping
+  become: yes
   tasks:
   - name: installing maven and mysql
     ansible.builtin.dnf:
